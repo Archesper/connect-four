@@ -18,7 +18,7 @@ class Board
   end
 
   def count_disc(disc)
-    @columns.inject(0) { |total, column| total += column.count(disc) }
+    @columns.inject(0) { |total, column| total + column.count(disc) }
   end
 
   def to_s
