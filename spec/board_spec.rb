@@ -28,4 +28,22 @@ describe Board do
       end
     end
   end
+
+  describe '#count_disc' do
+    context 'when there are no DUMMY discs' do
+      it 'returns 0' do
+        disc = 'DUMMY'
+        count = board.count_disc(disc)
+        expect(count).to be_zero
+      end
+    end
+
+    context 'when there are 4 DUMMY discs' do
+      it 'returns 4' do
+        disc = 'DUMMY'
+        count = board.count_disc(disc)
+        expect(count).to be_zero
+      end
+    end
+  end
 end
