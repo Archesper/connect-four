@@ -68,4 +68,31 @@ describe Game do
       end
     end
   end
+
+  describe '#player_turn' do
+    let(:error_message) { 'Please pick a column from 1 to 7' }
+
+    context 'when user input is valid' do
+      it 'breaks loop and does display error message' do
+        valid_input = 5
+        allow(game).to receive(:player_input).and_return(valid_input)
+        expect(game).not_to receive(:puts).with(error_message)
+        game.player_turn
+      end
+    end
+
+    context 'when user inputs an invalid value 2 times then a valid value' do
+      before do
+        letter = 'a'
+        large_number = '170'
+        valid_input = '5'
+        allow(game).to_receive(:player_input).and_return(letter, large_number, valid_input)
+        allow(game).to_receive(:puts).with(error_message)
+      end
+      it 'outputs error message twice before breaking loop' do
+        expect(game).to receive(:puts).with(error_message).twice
+        game.player_turn
+      end
+    end
+  end
 end
