@@ -19,22 +19,17 @@ class Board
 
   def to_s
     representation = ''
-    representation << " \u250C"
-    representation << "\u2500" * 16
-    representation << "\u2510"
-    representation << "\n"
+    representation << Display::TOP_BOX_FRAME
     5.downto(0) do |row_index|
       @columns.each_with_index do |column, column_index|
-        representation << " \u2502" if column_index.zero?
-        cell = column[row_index].nil? ? Tokens::EMPTY : column[row_index]
+        representation << " #{Display::VERTICAL_LINE}" if column_index.zero?
+        cell = column[row_index].nil? ? Display::EMPTY_CELL : column[row_index]
         representation << " #{cell}"
-        representation << "  \u2502" if column_index == @columns.length - 1
+        representation << "  #{Display::VERTICAL_LINE}" if column_index == @columns.length - 1
       end
       representation << "\n"
     end
-    representation << " \u2514"
-    representation << "\u2500" * 16
-    representation << "\u2518"
+    representation << Display::BOTTOM_BOX_FRAME
     representation
   end
 end
