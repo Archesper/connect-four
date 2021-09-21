@@ -16,7 +16,7 @@ describe Board do
       it 'pushes disc to the first free cell of the board' do
         disc = 'dummy disc'
         board.instance_variable_get(:@columns)[2] = [disc, disc, nil, nil, nil, nil]
-        expect{ board.push_disc(3, disc) }.to change { board.instance_variable_get(:@columns)[2] }.to [disc, disc, disc, nil, nil, nil]
+        expect { board.push_disc(3, disc) }.to change { board.instance_variable_get(:@columns)[2] }.to [disc, disc, disc, nil, nil, nil]
       end
     end
 
