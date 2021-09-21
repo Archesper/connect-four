@@ -1,6 +1,6 @@
 # frozen_string_literal: false
 
-require './lib/tokens'
+require './lib/display'
 
 class Board
   def initialize
