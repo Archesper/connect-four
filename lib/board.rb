@@ -17,6 +17,10 @@ class Board
     end
   end
 
+  def count_disc(disc)
+    @columns.inject(0) { |total, column| total += column.count(disc) }
+  end
+
   def to_s
     representation = ''
     representation << Display::TOP_BOX_FRAME
