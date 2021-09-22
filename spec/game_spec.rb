@@ -44,7 +44,7 @@ describe Game do
       end
     end
     context 'when current player is player2' do
-      it 'returns player1' do
+      it 'returns player 1' do
         game.instance_variable_set(:@current_player, player2)
         new_current_player = game.switch_current_player
         expect(new_current_player).to equal(player1)
@@ -53,27 +53,37 @@ describe Game do
   end
 
   describe '#player_turn' do
-    let(:error_message) { 'Please pick a column from 1 to 7' }
+    let(:error_message) { 'Invalid input. Please pick a column between 1 and 7' }
 
     context 'when user input is valid' do
-      it 'breaks loop and does display error message' do
-        valid_input = 5
+      before do
+        valid_input = '5'
         allow(game).to receive(:player_input).and_return(valid_input)
-        expect(game).not_to receive(:puts).with(error_message)
+        allow(game).to receive(:puts)
+        allow(game).to receive(:switch_current_player)
+      end
+      it 'breaks loop without displaying error message then switches current player' do
+        expect(game).to receive(:puts).once
+        expect(game).to receive(:switch_current_player).once
         game.player_turn
       end
     end
 
     context 'when user inputs an invalid value 2 times then a valid value' do
       before do
+        game.instance_variable_set(:@current_player, player1)
         letter = 'a'
         large_number = '170'
         valid_input = '5'
-        allow(game).to_receive(:player_input).and_return(letter, large_number, valid_input)
-        allow(game).to_receive(:puts).with(error_message)
+        allow(game).to receive(:player_input).and_return(letter, large_number, valid_input)
+        allow(game).to receive(:puts)
+        allow(game).to receive(:switch_current_player)
       end
-      it 'outputs error message twice before breaking loop' do
-        expect(game).to_receive(:puts).with(error_message).twice
+      it 'outputs error message twice before breaking loop, then switches current player' do
+        turn_message = "It's #{game.instance_variable_get(:@current_player).name}'s turn."
+        expect(game).to receive(:puts).with(turn_message).once
+        expect(game).to receive(:puts).with(error_message).twice
+        expect(game).to receive(:switch_current_player).once
         game.player_turn
       end
     end
