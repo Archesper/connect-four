@@ -88,4 +88,57 @@ describe Game do
       end
     end
   end
+
+  describe '#over?' do
+    context 'when game is not over' do
+      it 'returns false for an empty board' do
+        expect(game).not_to be_over
+      end
+
+      it 'returns false for a board that is not empty, but for which the game is not over' do
+        board = game.instance_variable_get(:@board)
+        board_columns = board.instance_variable_get(:@columns)
+        board_columns[0][0], board_columns[0][1], board_columns[0][2] = ['dummy'] * 3
+        board.instance_variable_set(:@last_disc_coordinates, { row: 2, column: 0 })
+        expect(game).not_to be_over
+      end
+    end
+
+    context 'when game is over' do
+      context 'when game is over by horizontal connect four' do
+        it 'returns true' do
+          board = game.instance_variable_get(:@board)
+          board_columns = board.instance_variable_get(:@columns)
+          board_columns[0][0], board_columns[1][0], board_columns[2][0], board_columns[3][0] = ['dummy'] * 4
+          board.instance_variable_set(:@last_disc_coordinates, { row: 0, column: 3 })
+          expect(game).to be_over
+        end
+      end
+      context 'when game is over by vertical connect four' do
+        it 'returns true' do
+          board = game.instance_variable_get(:@board)
+          board_columns = board.instance_variable_get(:@columns)
+          board_columns[0] = ['dummy', 'dummy', 'dummy', 'dummy', nil, nil]
+          board.instance_variable_set(:@last_disc_coordinates, { row: 2, column: 0 })
+          expect(game).to be_over
+        end
+      end
+      context 'when game is over by diagonal connect four' do
+        it 'returns true for a negative slope diagonal connect four' do
+          board = game.instance_variable_get(:@board)
+          board_columns = board.instance_variable_get(:@columns)
+          board_columns[0][5], board_columns[1][4], board_columns[2][3], board_columns[3][2] = ['dummy'] * 4
+          board.instance_variable_set(:@last_disc_coordinates, { row: 4, column: 1 })
+          expect(game).to be_over
+        end
+        it 'returns true for a positive slope diagonal connect four' do
+          board = game.instance_variable_get(:@board)
+          board_columns = board.instance_variable_get(:@columns)
+          board_columns[0][0], board_columns[1][1], board_columns[2][2], board_columns[3][3] = ['dummy'] * 4
+          board.instance_variable_set(:@last_disc_coordinates, { row: 2, column: 2 })
+          expect(game).to be_over
+        end
+      end
+    end
+  end
 end
