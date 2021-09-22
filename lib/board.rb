@@ -3,8 +3,12 @@
 require './lib/display'
 
 class Board
+  attr_reader :last_disc_coordinates
+
   def initialize
     @columns = Array.new(7) { Array.new(6) }
+    # Instance variable to keep track of last pushed disc, to be used in determining whether game is over
+    @last_disc_coordinates = nil
   end
 
   def push_disc(column_index, disc)
@@ -13,12 +17,21 @@ class Board
       nil
     else
       first_free_index = column.find_index(nil)
+      @last_disc_coordinates = { row: first_free_index, column: column_index }
       column[first_free_index] = disc
     end
   end
 
   def count_disc(disc)
     @columns.inject(0) { |total, column| total + column.count(disc) }
+  end
+
+  def row(index)
+    @columns.map { |column| column[index] }
+  end
+
+  def column(index)
+    @columns[index]
   end
 
   def to_s
