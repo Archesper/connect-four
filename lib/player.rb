@@ -3,8 +3,8 @@
 class Player
   attr_reader :name, :disc
 
-  def initialize(name, disc)
+  def initialize(name, token)
     @name = name
-    @disc = disc
+    @token = token
   end
 end
