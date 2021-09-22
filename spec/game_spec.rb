@@ -35,36 +35,19 @@ describe Game do
     end
   end
 
-  describe '#current_player' do
-    context 'when player1 has put more discs than player2' do
-      before do
-        allow(game.instance_variable_get(:@board)).to receive(:count_disc).with('dummy 1').and_return(7)
-        allow(game.instance_variable_get(:@board)).to receive(:count_disc).with('dummy 2').and_return(5)
-      end
-      it 'returns player2' do
-        current_player = game.current_player
-        expect(current_player).to equal(player2)
+  describe '#switch_current_player' do
+    context 'when current player is player1' do
+      it 'returns player 2' do
+        game.instance_variable_set(:@current_player, player1)
+        new_current_player = game.switch_current_player
+        expect(new_current_player).to equal(player2)
       end
     end
-    context 'when player1 has put less discs than player2' do
-      before do
-        allow(game.instance_variable_get(:@board)).to receive(:count_disc).with('dummy 1').and_return(5)
-        allow(game.instance_variable_get(:@board)).to receive(:count_disc).with('dummy 2').and_return(7)
-      end
+    context 'when current player is player2' do
       it 'returns player1' do
-        current_player = game.current_player
-        expect(current_player).to equal(player1)
-      end
-    end
-
-    context 'at start of the game, when both players at 0 disks' do
-      before do
-        allow(game.instance_variable_get(:@board)).to receive(:count_disc).with('dummy 1').and_return(0)
-        allow(game.instance_variable_get(:@board)).to receive(:count_disc).with('dummy 2').and_return(0)
-      end
-      it 'returns nil' do
-        current_player = game.current_player
-        expect(current_player).to be_nil
+        game.instance_variable_set(:@current_player, player2)
+        new_current_player = game.switch_current_player
+        expect(new_current_player).to equal(player1)
       end
     end
   end
@@ -90,7 +73,7 @@ describe Game do
         allow(game).to_receive(:puts).with(error_message)
       end
       it 'outputs error message twice before breaking loop' do
-        expect(game).to receive(:puts).with(error_message).twice
+        expect(game).to_receive(:puts).with(error_message).twice
         game.player_turn
       end
     end
