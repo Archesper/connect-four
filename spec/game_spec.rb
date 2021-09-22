@@ -2,6 +2,8 @@
 
 require './lib/game'
 require './lib/player'
+require './lib/disc'
+require 'pry-byebug'
 
 describe Game do
   subject(:game) { Game.new(player1, player2) }
@@ -90,16 +92,21 @@ describe Game do
   end
 
   describe '#over?' do
+    # Helper method for generating dummy Disc objects
+    def dummy_discs(*args)
+      args.map { |coordinates| Disc.new('dummy', coordinates[1], coordinates[0]) }
+    end
+
     context 'when game is not over' do
       it 'returns false for an empty board' do
         expect(game).not_to be_over
       end
-
       it 'returns false for a board that is not empty, but for which the game is not over' do
         board = game.instance_variable_get(:@board)
         board_columns = board.instance_variable_get(:@columns)
-        board_columns[0][0], board_columns[0][1], board_columns[0][2] = ['dummy'] * 3
-        board.instance_variable_set(:@last_disc_coordinates, { row: 2, column: 0 })
+        board_columns[0][0], board_columns[0][1], board_columns[0][2] = dummy_discs([0, 0], [0, 1], [0, 2])
+        puts board_columns
+        board.instance_variable_set(:@last_disc, board_columns[0][2])
         expect(game).not_to be_over
       end
     end
@@ -109,8 +116,8 @@ describe Game do
         it 'returns true' do
           board = game.instance_variable_get(:@board)
           board_columns = board.instance_variable_get(:@columns)
-          board_columns[0][0], board_columns[1][0], board_columns[2][0], board_columns[3][0] = ['dummy'] * 4
-          board.instance_variable_set(:@last_disc_coordinates, { row: 0, column: 3 })
+          board_columns[0][0], board_columns[1][0], board_columns[2][0], board_columns[3][0] = dummy_discs([0, 0], [1, 0], [2, 0], [3, 0])
+          board.instance_variable_set(:@last_disc, board_columns[3][0])
           expect(game).to be_over
         end
       end
@@ -118,8 +125,8 @@ describe Game do
         it 'returns true' do
           board = game.instance_variable_get(:@board)
           board_columns = board.instance_variable_get(:@columns)
-          board_columns[0] = ['dummy', 'dummy', 'dummy', 'dummy', nil, nil]
-          board.instance_variable_set(:@last_disc_coordinates, { row: 2, column: 0 })
+          board_columns[0] = dummy_discs([0, 0], [0, 1], [0, 2], [0, 3]) + [nil, nil]
+          board.instance_variable_set(:@last_disc, board_columns[0][3])
           expect(game).to be_over
         end
       end
@@ -127,15 +134,15 @@ describe Game do
         it 'returns true for a negative slope diagonal connect four' do
           board = game.instance_variable_get(:@board)
           board_columns = board.instance_variable_get(:@columns)
-          board_columns[0][5], board_columns[1][4], board_columns[2][3], board_columns[3][2] = ['dummy'] * 4
-          board.instance_variable_set(:@last_disc_coordinates, { row: 4, column: 1 })
+          board_columns[0][5], board_columns[1][4], board_columns[2][3], board_columns[3][2] = dummy_discs([0, 5], [1, 4], [2, 3], [3, 2])
+          board.instance_variable_set(:@last_disc, board_columns[2][3])
           expect(game).to be_over
         end
         it 'returns true for a positive slope diagonal connect four' do
           board = game.instance_variable_get(:@board)
           board_columns = board.instance_variable_get(:@columns)
-          board_columns[0][0], board_columns[1][1], board_columns[2][2], board_columns[3][3] = ['dummy'] * 4
-          board.instance_variable_set(:@last_disc_coordinates, { row: 2, column: 2 })
+          board_columns[0][0], board_columns[1][1], board_columns[2][2], board_columns[3][3] = dummy_discs([0, 0], [1, 1], [2, 2], [3, 3])
+          board.instance_variable_set(:@last_disc, board_columns[2][2])
           expect(game).to be_over
         end
       end
