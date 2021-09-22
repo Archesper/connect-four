@@ -1,24 +1,26 @@
 # frozen_string_literal: false
 
 require './lib/display'
+require './lib/disc'
 
 class Board
-  attr_reader :last_disc_coordinates
+  attr_reader :last_disc
 
   def initialize
     @columns = Array.new(7) { Array.new(6) }
     # Instance variable to keep track of last pushed disc, to be used in determining whether game is over
-    @last_disc_coordinates = nil
+    @last_disc = nil
   end
 
-  def push_disc(column_index, disc)
+  def push_disc(column_index, token)
     column = @columns[column_index - 1]
     if column.count(nil).zero?
       nil
     else
       first_free_index = column.find_index(nil)
-      @last_disc_coordinates = { row: first_free_index, column: column_index }
-      column[first_free_index] = disc
+      new_disc = Disc.new(token, first_free_index, column_index)
+      @last_disc = new_disc
+      column[first_free_index] = new_disc
     end
   end
 
