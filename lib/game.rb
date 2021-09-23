@@ -15,7 +15,6 @@ class Game
     loop do
       input = verify_input(player_input)
       break unless input.nil?
-
       puts 'Invalid input. Please pick a column between 1 and 7'
     end
     switch_current_player
@@ -27,9 +26,10 @@ class Game
   end
 
   def verify_input(input)
-    if input.match(/^[1-7]$/)
-      return input if @board.column(input.to_i - 1).count(nil).positive?
-    end
+    return unless input.match(/^[1-7]$/)
+    return :full if @board.column(input.to_i - 1).count(nil).zero?
+
+    input
   end
 
   def switch_current_player
