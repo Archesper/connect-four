@@ -35,6 +35,16 @@ describe Game do
         expect(verified_input2).to be_nil
       end
     end
+
+    context 'when targetted column is full' do
+      it 'returns nil' do
+        board = game.instance_variable_get(:@board)
+        allow(board).to receive(:column).with(3).and_return(['dummy'] * 6)
+        full_column_index = '4'
+        verified_input = game.verify_input(full_column_index)
+        expect(verified_input).to be_nil
+      end
+    end
   end
 
   describe '#switch_current_player' do

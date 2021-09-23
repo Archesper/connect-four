@@ -27,7 +27,9 @@ class Game
   end
 
   def verify_input(input)
-    return input if input.match(/^[1-7]$/)
+    if input.match(/^[1-7]$/)
+      return input if @board.column(input.to_i - 1).count(nil).positive?
+    end
   end
 
   def switch_current_player
