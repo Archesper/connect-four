@@ -95,7 +95,10 @@ describe Game do
     # Helper method for generating dummy Disc objects
     def dummy_discs(*args)
       doubles = args.map { |coordinates| instance_double(Disc, token: 'dummy', row_index: coordinates[1], column_index: coordinates[0]) }
-      doubles.each { |double| allow(double).to receive(:==).with(having_attributes(token: 'dummy')).and_return(true) }
+      doubles.each do |double|
+        allow(double).to receive(:==).with(having_attributes(token: 'dummy')).and_return(true)
+        allow(double).to receive(:==).with(having_attributes(token: 'other dummy')).and_return(false)
+      end
     end
 
     context 'when game is not over' do
@@ -117,6 +120,14 @@ describe Game do
           board = game.instance_variable_get(:@board)
           board_columns = board.instance_variable_get(:@columns)
           board_columns[0][0], board_columns[1][0], board_columns[2][0], board_columns[3][0] = dummy_discs([0, 0], [1, 0], [2, 0], [3, 0])
+          board.instance_variable_set(:@last_disc, board_columns[3][0])
+          expect(game).to be_over
+        end
+        it 'returns true even if a different disc is hit' do
+          board = game.instance_variable_get(:@board)
+          board_columns = board.instance_variable_get(:@columns)
+          different_disk = instance_double(Disc, token: 'other dummy', row_index: 0, column_index: 4)
+          board_columns[0][0], board_columns[1][0], board_columns[2][0], board_columns[3][0] = dummy_discs([0, 0], [1, 0], [2, 0], [3, 0]) + [different_disk]
           board.instance_variable_set(:@last_disc, board_columns[3][0])
           expect(game).to be_over
         end
