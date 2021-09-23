@@ -35,6 +35,8 @@ class Game
   end
 
   def over?
+    return false if @board.last_disc.nil?
+
     horizontal_connect_four || vertical_connect_four
   end
 
