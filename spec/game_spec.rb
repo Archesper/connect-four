@@ -94,7 +94,8 @@ describe Game do
   describe '#over?' do
     # Helper method for generating dummy Disc objects
     def dummy_discs(*args)
-      args.map { |coordinates| Disc.new('dummy', coordinates[1], coordinates[0]) }
+      doubles = args.map { |coordinates| instance_double(Disc, token: 'dummy', row_index: coordinates[1], column_index: coordinates[0]) }
+      doubles.each { |double| allow(double).to receive(:==).with(having_attributes(token: 'dummy')).and_return(true) }
     end
 
     context 'when game is not over' do
@@ -105,7 +106,6 @@ describe Game do
         board = game.instance_variable_get(:@board)
         board_columns = board.instance_variable_get(:@columns)
         board_columns[0][0], board_columns[0][1], board_columns[0][2] = dummy_discs([0, 0], [0, 1], [0, 2])
-        puts board_columns
         board.instance_variable_set(:@last_disc, board_columns[0][2])
         expect(game).not_to be_over
       end
@@ -125,7 +125,7 @@ describe Game do
         it 'returns true' do
           board = game.instance_variable_get(:@board)
           board_columns = board.instance_variable_get(:@columns)
-          board_columns[0] = dummy_discs([0, 0], [0, 1], [0, 2], [0, 3]) + [nil, nil]
+          board_columns[0] = dummy_discs([0, 0], [0, 1], [0, 2], [0, 3]) + [nil, nil, nil]
           board.instance_variable_set(:@last_disc, board_columns[0][3])
           expect(game).to be_over
         end
