@@ -66,6 +66,7 @@ describe Game do
 
   describe '#player_turn' do
     let(:error_message) { 'Invalid input. Please pick a column between 1 and 7' }
+    let(:column_full_message) { 'Targetted column is empty, please pick another' }
 
     context 'when user input is valid' do
       before do
@@ -83,7 +84,6 @@ describe Game do
 
     context 'when user inputs an invalid value 2 times then a valid value' do
       before do
-        game.instance_variable_set(:@current_player, player1)
         letter = 'a'
         large_number = '170'
         valid_input = '5'
@@ -95,6 +95,26 @@ describe Game do
         turn_message = "It's #{game.instance_variable_get(:@current_player).name}'s turn."
         expect(game).to receive(:puts).with(turn_message).once
         expect(game).to receive(:puts).with(error_message).twice
+        expect(game).to receive(:switch_current_player).once
+        game.player_turn
+      end
+    end
+
+    context 'when full column is chosen once then valid value is input' do
+      before do
+        board = game.instance_variable_get(:@board)
+        full_column_index = '1'
+        valid_input = '4'
+        allow(board).to receive(:column).with(0).and_return(['dummy'] * 6)
+        allow(board).to receive(:column).with(3).and_return([nil] * 6)
+        allow(game).to receive(:player_input).and_return(full_column_index, valid_input)
+        allow(game).to receive(:puts)
+        allow(game).to receive(:switch_current_player)
+      end
+      it 'outputs error message once before breaking loop, then switches current player' do
+        turn_message = "It's #{game.instance_variable_get(:@current_player).name}'s turn."
+        expect(game).to receive(:puts).with(turn_message).once
+        expect(game).to receive(:puts).with(column_full_message).once
         expect(game).to receive(:switch_current_player).once
         game.player_turn
       end

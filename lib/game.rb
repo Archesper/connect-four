@@ -14,11 +14,23 @@ class Game
     puts "It's #{@current_player.name}'s turn."
     loop do
       input = verify_input(player_input)
-      break unless input.nil?
-      puts 'Invalid input. Please pick a column between 1 and 7'
+      break unless input.nil? || input == :full
+
+      input.nil? ? puts('Invalid input. Please pick a column between 1 and 7') : puts('Targetted column is empty, please pick another')
     end
     switch_current_player
   end
+
+  # def play
+  #   until over?
+  #     puts @board
+  #     player_turn
+  #   end
+  # end
+
+  # def update_board(input)
+  #   @board.push_disc(input.to_i - 1, @current_player.token)
+  # end
 
   def player_input
     puts 'Pick the column you wanna drop a disc in ( From 1 to 7 )'
