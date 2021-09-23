@@ -8,7 +8,6 @@ describe Board do
   describe '#push_disc' do
     let(:disc) { instance_double(Disc) }
     before do
-      allow(disc).to receive(:token).and_return('dummy')
       allow(Disc).to receive(:new).and_return(disc)
     end
     context 'when targetted column is empty' do
