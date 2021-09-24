@@ -8,6 +8,8 @@ class Disc
   end
 
   def ==(other)
+    return false unless other.instance_of?(Disc)
+
     token == other.token
   end
 end
