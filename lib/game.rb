@@ -18,7 +18,7 @@ class Game
       input = verify_input(player_input)
       break unless input.nil? || input == :full
 
-      input.nil? ? puts('Invalid input. Please pick a column between 1 and 7') : puts('Targetted column is full, please pick another')
+      input.nil? ? puts("\e[33mInvalid input. Please pick a column between 1 and 7.\e[m") : puts("\e[33mTargetted column is full, please pick another.\e[m")
     end
     update_board(input)
     switch_current_player
@@ -53,7 +53,7 @@ class Game
   end
 
   def self.game_setup
-    puts 'This is Connect Four, a game whose goal is to form a horizontal, vertical, or diagonal line by aligning 4 disks of the same color'
+    puts "\e[34mThis is Connect Four, a game whose goal is to form a horizontal, vertical, or diagonal line by aligning 4 disks of the same color.\e[m"
     names = player_names
     red_player = Player.new(names[:red], Display::RED_DISC, :red)
     yellow_player = Player.new(names[:yellow], Display::YELLOW_DISC, :yellow)
@@ -144,12 +144,12 @@ class Game
   end
 
   def player_input
-    puts 'Pick the column you wanna drop a disc in ( From 1 to 7 )'
+    puts 'Pick the column you wanna drop a disc in. ( From 1 to 7 )'
     gets.chomp
   end
 
   def self.player_names
-    puts "Please input players' names"
+    puts "Please input players' names:"
     print "\e[31mRed player's\e[m name: "
     red_player_name = gets.chomp
     print "\e[93mYellow player's\e[m name: "
