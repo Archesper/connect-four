@@ -49,7 +49,7 @@ class Game
   def over?
     return false if @board.last_disc.nil?
 
-    horizontal_connect_four? || vertical_connect_four? || positive_slope_diagonal_connect_four? || negative_slope_diagonal_connect_four?
+    horizontal_connect_four? || vertical_connect_four? || positive_slope_diagonal_connect_four? || negative_slope_diagonal_connect_four? || @board.count_disc(nil).zero?
   end
 
   def self.game_setup

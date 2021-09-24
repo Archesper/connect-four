@@ -65,8 +65,8 @@ describe Game do
   end
 
   describe '#player_turn' do
-    let(:error_message) { 'Invalid input. Please pick a column between 1 and 7' }
-    let(:column_full_message) { 'Targetted column is full, please pick another' }
+    let(:error_message) { "\e[33mInvalid input. Please pick a column between 1 and 7.\e[m" }
+    let(:column_full_message) { "\e[33mTargetted column is full, please pick another.\e[m" }
 
     context 'when user input is valid' do
       before do
@@ -134,6 +134,7 @@ describe Game do
       doubles.each do |double|
         allow(double).to receive(:==).with(having_attributes(token: 'dummy')).and_return(true)
         allow(double).to receive(:==).with(having_attributes(token: 'other dummy')).and_return(false)
+        allow(double).to receive(:==).with(nil).and_return(false)
       end
     end
 
@@ -190,6 +191,15 @@ describe Game do
           board_columns = board.instance_variable_get(:@columns)
           board_columns[0][0], board_columns[1][1], board_columns[2][2], board_columns[3][3] = dummy_discs([0, 0], [1, 1], [2, 2], [3, 3])
           board.instance_variable_set(:@last_disc, board_columns[2][2])
+          expect(game).to be_over
+        end
+      end
+      context 'when game is over with a tie' do
+        it 'returns true' do
+          board = game.instance_variable_get(:@board)
+          allow(board).to receive(:count_disc).with(nil).and_return(0)
+          # Set board's last_disc to a value so that #over doesn't return nil
+          allow(board).to receive(:last_disc).and_return(instance_double(Disc, token: 'dummy', row_index: 0, column_index: 0))
           expect(game).to be_over
         end
       end
