@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require './lib/board'
+require './lib/player'
 require 'pry-byebug'
 
 class Game
@@ -34,11 +35,6 @@ class Game
     @board.push_disc(input.to_i, @current_player.token)
   end
 
-  def player_input
-    puts 'Pick the column you wanna drop a disc in ( From 1 to 7 )'
-    gets.chomp
-  end
-
   def verify_input(input)
     return unless input.match(/^[1-7]$/)
     return :full if @board.column(input.to_i - 1).count(nil).zero?
@@ -54,6 +50,14 @@ class Game
     return false if @board.last_disc.nil?
 
     horizontal_connect_four? || vertical_connect_four? || positive_slope_diagonal_connect_four? || negative_slope_diagonal_connect_four?
+  end
+
+  def self.game_setup
+    puts 'This is Connect Four, a game whose goal is to form a horizontal, vertical, or diagonal line by aligning 4 disks of the same color'
+    names = player_names
+    red_player = Player.new(names[:red], Display::RED_DISC, :red)
+    yellow_player = Player.new(names[:yellow], Display::YELLOW_DISC, :yellow)
+    Game.new(red_player, yellow_player)
   end
 
   private
@@ -138,4 +142,19 @@ class Game
     connected_discs << last_disc
     connected_discs.length == 4
   end
+
+  def player_input
+    puts 'Pick the column you wanna drop a disc in ( From 1 to 7 )'
+    gets.chomp
+  end
+
+  def self.player_names
+    puts "Please input players' names"
+    print "\e[31mRed player's\e[m name: "
+    red_player_name = gets.chomp
+    print "\e[93mYellow player's\e[m name: "
+    yellow_player_name = gets.chomp
+    { red: red_player_name, yellow: yellow_player_name }
+  end
+  private_class_method :player_names
 end
