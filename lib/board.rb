@@ -57,7 +57,7 @@ class Board
         representation << " #{Display::VERTICAL_LINE}" if column_index.zero?
         cell = column[row_index].nil? ? Display::EMPTY_CELL : column[row_index].token
         representation << " #{cell}"
-        representation << "  #{Display::VERTICAL_LINE}" if column_index == @columns.length - 1
+        representation << " #{Display::VERTICAL_LINE}" if column_index == @columns.length - 1
       end
       representation << "\n"
     end
