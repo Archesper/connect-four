@@ -11,26 +11,28 @@ class Game
   end
 
   def player_turn
-    puts "It's #{@current_player.name}'s turn."
+    puts "It's #{Display.colorize(@current_player.name, @current_player.color)}'s turn."
+    input = nil
     loop do
       input = verify_input(player_input)
       break unless input.nil? || input == :full
 
-      input.nil? ? puts('Invalid input. Please pick a column between 1 and 7') : puts('Targetted column is empty, please pick another')
+      input.nil? ? puts('Invalid input. Please pick a column between 1 and 7') : puts('Targetted column is full, please pick another')
     end
+    update_board(input)
     switch_current_player
   end
 
-  # def play
-  #   until over?
-  #     puts @board
-  #     player_turn
-  #   end
-  # end
+  def play
+    until over?
+      puts @board
+      player_turn
+    end
+  end
 
-  # def update_board(input)
-  #   @board.push_disc(input.to_i - 1, @current_player.token)
-  # end
+  def update_board(input)
+    @board.push_disc(input.to_i, @current_player.token)
+  end
 
   def player_input
     puts 'Pick the column you wanna drop a disc in ( From 1 to 7 )'
@@ -59,19 +61,18 @@ class Game
   # These methods start their checks from the last disc that was pushed, as that is the disc that must have caused the connect four
   def horizontal_connect_four?
     last_disc = @board.last_disc
-    row_to_check = @board.row(last_disc.row_index)
     connected_discs = []
     # Add discs to the right of last disc until different disc, empty cell or board edge is hit
-    current_disc = row_to_check[last_disc.column_index + 1]
+    current_disc = @board.get_disc(last_disc.column_index + 1, last_disc.row_index)
     until current_disc != last_disc
       connected_discs << current_disc
-      current_disc = row_to_check[current_disc.column_index + 1]
+      current_disc = @board.get_disc(current_disc.column_index + 1, current_disc.row_index)
     end
     # Add discs to the left of last disc until different disc, empty cell or board edge is hit
-    current_disc = row_to_check[last_disc.column_index - 1]
+    current_disc = @board.get_disc(last_disc.column_index - 1, last_disc.row_index)
     until current_disc != last_disc
       connected_discs << current_disc
-      current_disc = row_to_check[current_disc.column_index - 1]
+      current_disc = @board.get_disc(current_disc.column_index - 1, current_disc.row_index)
     end
     # Add last disc
     connected_discs << last_disc
@@ -80,19 +81,18 @@ class Game
 
   def vertical_connect_four?
     last_disc = @board.last_disc
-    column_to_check = @board.column(last_disc.column_index)
     connected_discs = []
     # Add discs above last disc until different disc, empty cell or board edge is hit
-    current_disc = column_to_check[last_disc.row_index + 1]
+    current_disc = @board.get_disc(last_disc.column_index, last_disc.row_index + 1)
     until current_disc != last_disc
       connected_discs << current_disc
-      current_disc = column_to_check[current_disc.row_index + 1]
+      current_disc = @board.get_disc(current_disc.column_index, current_disc.row_index + 1)
     end
     # Add discs to the left of last disc until different disc, empty cell or board edge is hit
-    current_disc = column_to_check[last_disc.row_index - 1]
+    current_disc = @board.get_disc(last_disc.column_index, last_disc.row_index - 1)
     until current_disc != last_disc
       connected_discs << current_disc
-      current_disc = column_to_check[current_disc.row_index - 1]
+      current_disc = @board.get_disc(current_disc.column_index, current_disc.row_index - 1)
     end
     # Add last disc
     connected_discs << last_disc
@@ -103,16 +103,16 @@ class Game
     last_disc = @board.last_disc
     connected_discs = []
     # Add discs diagonally above until different disc, empty cell or board edge is hit
-    current_disc = @board.column(last_disc.column_index + 1)[last_disc.row_index + 1]
+    current_disc = @board.get_disc(last_disc.column_index + 1, last_disc.row_index + 1)
     until current_disc != last_disc
       connected_discs << current_disc
-      current_disc = @board.column(current_disc.column_index + 1)[current_disc.row_index + 1]
+      current_disc = @board.get_disc(current_disc.column_index + 1, current_disc.row_index + 1)
     end
     # Add discs diagonally below until different disc, empty cell or board edge is hit
-    current_disc = @board.column(last_disc.column_index - 1)[last_disc.row_index - 1]
+    current_disc = @board.get_disc(last_disc.column_index - 1, last_disc.row_index - 1)
     until current_disc != last_disc
       connected_discs << current_disc
-      current_disc = @board.column(current_disc.column_index - 1)[current_disc.row_index - 1]
+      current_disc = @board.get_disc(current_disc.column_index - 1, current_disc.row_index - 1)
     end
     # Add last disc
     connected_discs << last_disc
@@ -123,16 +123,16 @@ class Game
     last_disc = @board.last_disc
     connected_discs = []
     # Add discs diagonally below until different disc, empty cell or board edge is hit
-    current_disc = @board.column(last_disc.column_index + 1)[last_disc.row_index - 1]
+    current_disc = @board.get_disc(last_disc.column_index + 1, last_disc.row_index - 1)
     until current_disc != last_disc
       connected_discs << current_disc
-      current_disc = @board.column(current_disc.column_index + 1)[current_disc.row_index - 1]
+      current_disc = @board.get_disc(current_disc.column_index + 1, current_disc.row_index - 1)
     end
     # Add discs diagonally above until different disc, empty cell or board edge is hit
-    current_disc = @board.column(last_disc.column_index - 1)[last_disc.row_index + 1]
+    current_disc = @board.get_disc(last_disc.column_index - 1, last_disc.row_index + 1)
     until current_disc != last_disc
       connected_discs << current_disc
-      current_disc = @board.column(current_disc.column_index - 1)[current_disc.row_index + 1]
+      current_disc = @board.get_disc(current_disc.column_index - 1, current_disc.row_index + 1)
     end
     # Add last disc
     connected_discs << last_disc
