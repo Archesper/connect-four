@@ -7,8 +7,8 @@ require 'pry-byebug'
 
 describe Game do
   subject(:game) { Game.new(player1, player2) }
-  let(:player1) { instance_double(Player, name: '1', disc: 'dummy 1') }
-  let(:player2) { instance_double(Player, name: '2', disc: 'dummy 2') }
+  let(:player1) { instance_double(Player, name: '1', token: 'dummy 1') }
+  let(:player2) { instance_double(Player, name: '2', token: 'dummy 2') }
 
   describe '#verify_input' do
     context 'when input is valid' do
@@ -66,17 +66,19 @@ describe Game do
 
   describe '#player_turn' do
     let(:error_message) { 'Invalid input. Please pick a column between 1 and 7' }
-    let(:column_full_message) { 'Targetted column is empty, please pick another' }
+    let(:column_full_message) { 'Targetted column is full, please pick another' }
 
     context 'when user input is valid' do
       before do
         valid_input = '5'
         allow(game).to receive(:player_input).and_return(valid_input)
         allow(game).to receive(:puts)
+        allow(game).to receive(:update_board)
         allow(game).to receive(:switch_current_player)
       end
       it 'breaks loop without displaying error message then switches current player' do
         expect(game).to receive(:puts).once
+        expect(game).to receive(:update_board).with('5').once
         expect(game).to receive(:switch_current_player).once
         game.player_turn
       end
@@ -89,12 +91,14 @@ describe Game do
         valid_input = '5'
         allow(game).to receive(:player_input).and_return(letter, large_number, valid_input)
         allow(game).to receive(:puts)
+        allow(game).to receive(:update_board)
         allow(game).to receive(:switch_current_player)
       end
       it 'outputs error message twice before breaking loop, then switches current player' do
         turn_message = "It's #{game.instance_variable_get(:@current_player).name}'s turn."
         expect(game).to receive(:puts).with(turn_message).once
         expect(game).to receive(:puts).with(error_message).twice
+        expect(game).to receive(:update_board).with('5').once
         expect(game).to receive(:switch_current_player).once
         game.player_turn
       end
@@ -109,12 +113,14 @@ describe Game do
         allow(board).to receive(:column).with(3).and_return([nil] * 6)
         allow(game).to receive(:player_input).and_return(full_column_index, valid_input)
         allow(game).to receive(:puts)
+        allow(game).to receive(:update_board)
         allow(game).to receive(:switch_current_player)
       end
       it 'outputs error message once before breaking loop, then switches current player' do
         turn_message = "It's #{game.instance_variable_get(:@current_player).name}'s turn."
         expect(game).to receive(:puts).with(turn_message).once
         expect(game).to receive(:puts).with(column_full_message).once
+        expect(game).to receive(:update_board).with('4').once
         expect(game).to receive(:switch_current_player).once
         game.player_turn
       end
