@@ -7,4 +7,13 @@ module Display
   TOP_BOX_FRAME = " \u250C#{"\u2500" * 16}\u2510\n"
   BOTTOM_BOX_FRAME = " \u2514#{"\u2500" * 16}\u2518\n"
   VERTICAL_LINE = "\u2502"
+
+  def self.colorize(string, color)
+    case color
+    when :red
+      "\e[31m#{string}\e[m"
+    when :yellow
+      "\e[93m#{string}\e[m"
+    end
+  end
 end
