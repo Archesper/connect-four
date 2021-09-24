@@ -18,10 +18,23 @@ class Board
       nil
     else
       first_free_index = column.find_index(nil)
-      new_disc = Disc.new(token, first_free_index, column_index)
+      new_disc = Disc.new(token, first_free_index, column_index - 1)
       @last_disc = new_disc
       column[first_free_index] = new_disc
     end
+  end
+
+  def get_disc(column_index, row_index)
+    # Return nil if either indexes are negative
+    # This check is necessary, as if a negative index is used array indexing will start at the end
+    # which might return a disc, when the behavior that should be simulated is 'going off the board'
+    # and returning a node that doesn't exist i.e nil
+    return nil unless column_index >= 0 && row_index >= 0
+
+    column = @columns[column_index]
+    return nil if column.nil?
+
+    column[row_index]
   end
 
   def count_disc(disc)
@@ -42,7 +55,7 @@ class Board
     5.downto(0) do |row_index|
       @columns.each_with_index do |column, column_index|
         representation << " #{Display::VERTICAL_LINE}" if column_index.zero?
-        cell = column[row_index].nil? ? Display::EMPTY_CELL : column[row_index]
+        cell = column[row_index].nil? ? Display::EMPTY_CELL : column[row_index].token
         representation << " #{cell}"
         representation << "  #{Display::VERTICAL_LINE}" if column_index == @columns.length - 1
       end
