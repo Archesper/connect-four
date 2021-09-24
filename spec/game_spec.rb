@@ -7,8 +7,8 @@ require 'pry-byebug'
 
 describe Game do
   subject(:game) { Game.new(player1, player2) }
-  let(:player1) { instance_double(Player, name: '1', token: 'dummy 1') }
-  let(:player2) { instance_double(Player, name: '2', token: 'dummy 2') }
+  let(:player1) { instance_double(Player, name: '1', token: 'dummy 1', color: :red) }
+  let(:player2) { instance_double(Player, name: '2', token: 'dummy 2', color: :yellow) }
 
   describe '#verify_input' do
     context 'when input is valid' do
@@ -95,7 +95,7 @@ describe Game do
         allow(game).to receive(:switch_current_player)
       end
       it 'outputs error message twice before breaking loop, then switches current player' do
-        turn_message = "It's #{game.instance_variable_get(:@current_player).name}'s turn."
+        turn_message = "It's #{Display.colorize(game.instance_variable_get(:@current_player).name, game.instance_variable_get(:@current_player).color)}'s turn."
         expect(game).to receive(:puts).with(turn_message).once
         expect(game).to receive(:puts).with(error_message).twice
         expect(game).to receive(:update_board).with('5').once
@@ -117,7 +117,7 @@ describe Game do
         allow(game).to receive(:switch_current_player)
       end
       it 'outputs error message once before breaking loop, then switches current player' do
-        turn_message = "It's #{game.instance_variable_get(:@current_player).name}'s turn."
+        turn_message = "It's #{Display.colorize(game.instance_variable_get(:@current_player).name, game.instance_variable_get(:@current_player).color)}'s turn."
         expect(game).to receive(:puts).with(turn_message).once
         expect(game).to receive(:puts).with(column_full_message).once
         expect(game).to receive(:update_board).with('4').once
