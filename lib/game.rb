@@ -28,7 +28,7 @@ class Game
       puts @board
       player_turn
     end
-    puts board
+    puts @board
     puts finish_message
   end
 
