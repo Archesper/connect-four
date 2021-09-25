@@ -2,7 +2,6 @@
 
 require './lib/board'
 require './lib/player'
-require 'pry-byebug'
 
 class Game
   def initialize(player1, player2)
