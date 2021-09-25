@@ -29,6 +29,7 @@ class Game
       puts @board
       player_turn
     end
+    puts finish_message
   end
 
   def update_board(input)
@@ -50,6 +51,16 @@ class Game
     return false if @board.last_disc.nil?
 
     horizontal_connect_four? || vertical_connect_four? || positive_slope_diagonal_connect_four? || negative_slope_diagonal_connect_four? || @board.count_disc(nil).zero?
+  end
+
+  def finish_message
+    if @board.count_disc(nil).zero?
+      "Game over! It's a tie."
+    else
+      # Switch @current_player as player is switched before over? check
+      switch_current_player
+      "Game over! #{Display.colorize(@current_player.name, @current_player.color)} won!"
+    end
   end
 
   def self.game_setup

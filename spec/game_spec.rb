@@ -205,4 +205,21 @@ describe Game do
       end
     end
   end
+  describe '#finish_message' do
+    context 'when game is over with a tie' do
+      it 'returns game_tie_message' do
+        board = game.instance_variable_get(:@board)
+        allow(board).to receive(:count_disc).with(nil).and_return(0)
+        game_tie_message = "Game over! It's a tie."
+        expect(game.finish_message).to eql(game_tie_message)
+      end
+    end
+    context 'when game is over and there is a winner' do
+      it 'returns player_won_message' do
+        winning_player = game.instance_variable_get(:@players).find { |player| player != game.instance_variable_get(:@current_player) }
+        player_won_message = "Game over! #{Display.colorize(winning_player.name, winning_player.color)} won!"
+        expect(game.finish_message).to eql(player_won_message)
+      end
+    end
+  end
 end
