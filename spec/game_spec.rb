@@ -3,7 +3,6 @@
 require './lib/game'
 require './lib/player'
 require './lib/disc'
-require 'pry-byebug'
 
 describe Game do
   subject(:game) { Game.new(player1, player2) }
