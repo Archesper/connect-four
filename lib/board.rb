@@ -49,6 +49,14 @@ class Board
     @columns[index]
   end
 
+  def non_full_columns
+    indexes = []
+    @columns.each_with_index do |column, index|
+      indexes << index + 1 unless column.count(nil).zero?
+    end
+    indexes
+  end
+
   def to_s
     representation = ''
     representation << Display::TOP_BOX_FRAME
